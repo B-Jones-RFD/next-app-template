@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-light: #7dd3fc;
+  --primary: #0ea5e9;
+  --primary-dark: #02B4c7;
+  --secondary-light: #e2e8f0;
+  --secondary: #94a3b8;
+  --secondary-dark: #475569;
+  --error: #dc2626;
+  --success: #10b981;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  @apply 'font-sans antialiased'
+}
