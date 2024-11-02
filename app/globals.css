@@ -7,7 +7,7 @@
   --foreground: #171717;
   --primary-light: #7dd3fc;
   --primary: #0ea5e9;
-  --primary-dark: #02B4c7;
+  --primary-dark: #02b4c7;
   --secondary-light: #e2e8f0;
   --secondary: #94a3b8;
   --secondary-dark: #475569;
@@ -25,5 +25,5 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  @apply 'font-sans antialiased'
+  @apply font-sans antialiased;
 }
