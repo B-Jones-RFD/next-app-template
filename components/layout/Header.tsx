@@ -6,7 +6,9 @@ import { signOut } from '@/app/(auth)/actions'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import Button from './ui/Button'
+import Button from '@/components/ui/Button'
+import MobileNav from './MobileNav'
+import Nav from '../Nav'
 
 export default function Header({
   appName,
@@ -28,16 +30,32 @@ export default function Header({
   return (
     <header className='flex-none'>
       <div className='m-2 flex items-center justify-between'>
-        <Link href='/' className='mx-2 flex items-center space-x-2'>
-          <Image
-            className='dark:invert'
-            src='/app.svg'
-            alt='App Icon'
-            width={20}
-            height={20}
-          />
-          <h1 className='text-2xl'>{appName}</h1>
-        </Link>
+        <div className='flex items-center'>
+          {user ? (
+            <MobileNav>
+              <Nav />
+            </MobileNav>
+          ) : (
+            <Image
+              className='dark:invert'
+              src='/app.svg'
+              alt='App Icon'
+              width={25}
+              height={20}
+            />
+          )}
+
+          <Link href='/' className='mx-2 flex items-center space-x-2'>
+            <Image
+              className='hidden md:block dark:invert'
+              src='/app.svg'
+              alt='App Icon'
+              width={25}
+              height={20}
+            />
+            <h1 className='text-2xl'>{appName}</h1>
+          </Link>
+        </div>
         {user && (
           <form action={handleSignOut} className='mx-2'>
             <Button type='submit' size='icon' intent='icon'>

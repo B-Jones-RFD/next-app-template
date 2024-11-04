@@ -1,7 +1,9 @@
 import 'server-only'
+import { cache } from 'react'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { compare, hash } from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
-import { cookies } from 'next/headers'
 
 type SessionData = {
   user: { id: string }
@@ -9,8 +11,8 @@ type SessionData = {
 }
 
 export const SESSION_KEY = 'sesson'
-// TODO: env
-const KEY = new TextEncoder().encode(process.env.AUTH_SECRET)
+const sessionSecret = process.env.AUTH_SECRET
+const encodedKey = new TextEncoder().encode(sessionSecret)
 const SALT_ROUNDS = 10
 
 export async function hashPassword(password: string) {
@@ -29,11 +31,11 @@ export async function signToken(payload: SessionData) {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('1 day from now')
-    .sign(KEY)
+    .sign(encodedKey)
 }
 
 export async function verifyToken(input: string) {
-  const { payload } = await jwtVerify(input, KEY, {
+  const { payload } = await jwtVerify(input, encodedKey, {
     algorithms: ['HS256'],
   })
   return payload as SessionData
@@ -52,8 +54,9 @@ export async function setSession(user: string) {
     expires: expiresInOneDay.toISOString(),
   }
   const encryptedSession = await signToken(session)
+  const cookieStore = await cookies()
 
-  ;(await cookies()).set(SESSION_KEY, encryptedSession, {
+  cookieStore.set(SESSION_KEY, encryptedSession, {
     expires: expiresInOneDay,
     httpOnly: true,
     secure: true,
@@ -62,24 +65,24 @@ export async function setSession(user: string) {
   })
 }
 
-export async function getUser() {
-  const sessionCookie = (await cookies()).get(SESSION_KEY)
-  if (!sessionCookie || !sessionCookie.value) {
-    return null
+export const verifySession = cache(async () => {
+  const cookieStore = await cookies()
+  const cookie = cookieStore.get(SESSION_KEY)
+
+  if (!cookie || !cookie.value) {
+    return redirect('./sign-in')
   }
 
-  const sessionData = await verifyToken(sessionCookie.value)
-  if (
-    !sessionData ||
-    !sessionData.user ||
-    typeof sessionData.user.id !== 'string'
-  ) {
-    return null
+  const session = await verifyToken(cookie.value)
+
+  if (!session?.user) {
+    return redirect('./sign-in')
   }
 
-  if (new Date(sessionData.expires) < new Date()) {
-    return null
-  }
+  return { isAuth: true, user: session.user }
+})
 
-  return sessionData.user
-}
+export const getUser = cache(async () => {
+  const session = await verifySession()
+  return session.user
+})

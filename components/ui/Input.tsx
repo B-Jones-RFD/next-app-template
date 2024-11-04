@@ -3,7 +3,7 @@ import { Field, Label, Control, Message } from '@radix-ui/react-form'
 interface Props extends React.ComponentPropsWithRef<'input'> {
   name: string
   label: string
-  error?: string | undefined
+  error?: string | string[] | undefined
 }
 
 export default function FormInput(props: Props) {
@@ -25,8 +25,24 @@ export default function FormInput(props: Props) {
       >
         {label + ' is required'}
       </Message>
-      <Message match='typeMismatch' forceMatch={!!error}>
-        {error}
+      <Message
+        match='typeMismatch'
+        forceMatch={!!error}
+        className='text-xs font-semibold text-red-500'
+        asChild
+      >
+        {Array.isArray(error) && error.length > 1 ? (
+          <div>
+            <p>{label} must..</p>
+            <ul>
+              {error.map((e) => (
+                <li key={e}>{`- ${e}`}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <span>{error}</span>
+        )}
       </Message>
     </Field>
   )

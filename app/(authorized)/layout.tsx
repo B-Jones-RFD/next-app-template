@@ -1,6 +1,8 @@
 import { getUser } from '@/lib/auth'
 
-import Header from '@/components/Header'
+import Page from '@/components/layout/Page'
+import Header from '@/components/layout/Header'
+import Nav from '@/components/Nav'
 
 export default function Layout({
   children,
@@ -13,7 +15,12 @@ export default function Layout({
   return (
     <>
       <Header appName={appName} promisedUser={user} />
-      <main>{children}</main>
+      <Page>
+        <Page.DesktopSidebar>
+          <Nav />
+        </Page.DesktopSidebar>
+        {children}
+      </Page>
     </>
   )
 }

@@ -3,7 +3,7 @@ import { getSession } from '@/lib/auth'
 
 import Image from 'next/image'
 import Login from './Login'
-import Page from '@/components/ui/Page'
+import Page from '@/components/layout/Page'
 
 export default async function LoginPage({
   searchParams,
