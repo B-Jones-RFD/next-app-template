@@ -54,6 +54,7 @@ Required environment variables
 | Name        | Default Value       |
 | ----------- | ------------------- |
 | AUTH_SECRET | 'Some random value' |
+| APP_NAME    | 'MyApp'             |
 
 ## Starting Development Server
 

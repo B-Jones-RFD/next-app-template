@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Next App Starter',
+  title: process.env.APP_NAME ?? 'Next App Starter',
   description: 'Starter application',
 }
 
